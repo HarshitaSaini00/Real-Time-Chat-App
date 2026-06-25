@@ -29,6 +29,7 @@ app.use("/api/messages", messageRoutes);
 if (process.env.NODE_ENV === "production") {
     // ✅ __dirname = /opt/render/project/src/backend/src
     // 2 levels upar jaana hai root tak
+    console.log("__dirname:", __dirname);  
     const frontendDist = path.join(__dirname, "../../frontend/ChatApp/dist");
 
     app.use(express.static(frontendDist));
