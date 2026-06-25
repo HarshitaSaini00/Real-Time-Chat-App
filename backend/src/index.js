@@ -17,8 +17,8 @@ const __dirname = path.resolve();
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.NODE_ENV === "production" 
-        ? "https://chat-pulse-2bjs.onrender.com"  // ✅ production URL
+    origin: process.env.NODE_ENV === "production"
+        ? "https://chat-pulse-2bjs.onrender.com"
         : "http://localhost:5173",
     credentials: true
 }));
@@ -27,10 +27,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
-    // ✅ __dirname = /opt/render/project/src/backend/src
-    // 2 levels upar jaana hai root tak
-    console.log("__dirname:", __dirname);  
-    const frontendDist = path.join(__dirname, "../../frontend/ChatApp/dist");
+    const frontendDist = path.join(__dirname, "frontend/ChatApp/dist"); // ✅ fixed path
 
     app.use(express.static(frontendDist));
 
