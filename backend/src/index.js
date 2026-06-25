@@ -14,10 +14,12 @@ dotenv.config();
 const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.NODE_ENV === "production" 
+        ? "https://chat-pulse-2bjs.onrender.com"  // ✅ production URL
+        : "http://localhost:5173",
     credentials: true
 }));
 
@@ -25,12 +27,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
-    // ✅ Fix 2: sahi path
-    app.use(express.static(path.join(__dirname, "../frontend/ChatApp/dist")));
+    // ✅ __dirname = /opt/render/project/src/backend/src
+    // 2 levels upar jaana hai root tak
+    const frontendDist = path.join(__dirname, "../../frontend/ChatApp/dist");
 
-    // ✅ Fix 1: new Express syntax
+    app.use(express.static(frontendDist));
+
     app.get("*splat", (req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend/ChatApp/dist/index.html"));
+        res.sendFile(path.join(frontendDist, "index.html"));
     });
 }
 
